@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+  <link rel="stylesheet" href="style.css" type="text/css">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU"
+    crossorigin="anonymous">
+  <link type="text/css" rel="stylesheet" href="//unpkg.com/bootstrap/dist/css/bootstrap.min.css" />
+  <link type="text/css" rel="stylesheet" href="//unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.css" />
+  <title>Admin Page</title>
+</head>
+
+<body>
+  <div id="admin">
+    <!-- <div v-if="success" class="alert alert-success" role="alert">
+      {{successMsg}}
+    </div>
+    <div v-if="error" class="alert alert-danger" role="alert">
+      {{errorMsg}}
+    </div> -->
+
+    <header class="container">
+      <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+        <a class="navbar-brand" href="#">Admin</a>
+        <b-button class="navbar-toggler" type="b-button" data-toggle="collapse" data-target="#navbarCollapse"
+          aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </b-button>
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+          <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+              <a class="nav-link" v-on:click.prevent="page='showItem'"> Show Item </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" v-on:click.prevent="page='showCategory'"> Show Category </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" v-on:click.prevent="page = 'addItem'"> Add Item </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" v-on:click.prevent="page = 'addCategory'"> Add Category </a>
+            </li>
+          </ul>
+          <form>
+            <div class="input-group ">
+              <input type="text" class="form-control" placeholder="Search">
+              <div class="input-group-append">
+                <b-button class="btn btn-success mr-5 " type="b-button">Search</b-button>
+                <b-button class="btn btn-outline-light ml-5 my-2 my-sm-0" v-on:click='logout'>Logout</b-button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </nav>
+    </header>
+    </header>
+    <br><br>
+
+    <div class="container " v-if="page === 'showItem'">
+      <b-table striped hover :items="items" :fields='fieldsItem'>
+
+        <template slot="index" slot-scope="row">
+          {{row.index + 1}}
+        </template>
+
+        <div slot="show_details" slot-scope="row">
+          <b-button size="sm" @click.stop="row.toggleDetails" class="mr-2">
+            {{ row.detailsShowing ? 'Hide' : 'Edit'}}
+          </b-button>
+          <b-button size="sm" v-on:click.prevent='deleteItem(row.index,row.item._id)' class="mr-2">
+            Delete
+          </b-button>
+        </div>
+
+        <div slot="row-details" slot-scope="row">
+          <b-card>
+            <b-form>
+              <div class="form-group">
+                <label for="recipient-name" class="col-form-label">Name: </label>
+                <input type="email" class="form-control" v-model='item.name' v-bind:placeholder="row.item.name">
+                <label for="message-text" class="col-form-label">Price:</label>
+                <input type="text" class="form-control" v-model='item.price' v-bind:placeholder="row.item.price">
+                <label for="message-text" class="col-form-label">Stock:</label>
+                <input type="text" class="form-control" v-model='item.stock' v-bind:placeholder="row.item.stock">
+                <label for="message-text" class="col-form-label">Category:</label>
+                <div>
+                  <b-form-select v-model="item.category" :options="options" class="mb-3" />
+                </div>
+                <label for="message-text" class="col-form-label">Description:</label>
+                <input type="text" class="form-control" v-model='item.description' v-bind:placeholder="row.item.description">
+                <label for="message-text" class="col-form-label">Image: </label>
+                <input class="form-control" type="file" name="file" @change='imagefile'>
+                <!-- <input type="text" class="form-control" v-model='item.link' v-bind:placeholder="row.item.link"> -->
+              </div>
+              <b-button type="b-button" class="btn btn-primary" v-on:click.prevent='editItem(row.index,row.item._id)'>
+                Edit Item </b-button>
+            </b-form><br>
+            <b-button size="sm" @click="row.toggleDetails">Hide</b-button>
+          </b-card>
+        </div>
+      </b-table>
+    </div>
+
+    <div class="container input-group" v-if="page === 'showCategory'">
+      <b-table striped hover :items="categories" :fields='fieldsCategory'>
+        <template slot="index" slot-scope="row">
+          {{row.index + 1}}
+        </template>
+        <div slot="show_details" slot-scope="row">
+          <b-button size="sm" @click.stop="row.toggleDetails" class="mr-2">
+            {{ row.detailsShowing ? 'Hide' : 'Edit'}}
+          </b-button>
+          <b-button size="sm" v-on:click.prevent='deleteCategory(row.index,row.item._id)' class="mr-2">
+            Delete
+          </b-button>
+        </div>
+        <div slot="row-details" slot-scope="row">
+          <b-card>
+            <b-form>
+              <div class="form-group">
+                <label for="recipient-name" class="col-form-label">Name: </label>
+                <input type="email" class="form-control" v-model='category.name' v-bind:placeholder="row.item.name">
+              </div>
+              <b-button type="b-button" class="btn btn-primary" v-on:click.prevent='editCategory(row.index,row.item._id)'>
+                Edit Category </b-button>
+              <br>
+            </b-form><br>
+            <b-button size="sm" @click="row.toggleDetails">Hide</b-button>
+          </b-card>
+        </div>
+      </b-table>
+    </div>
+
+    <div class="container input-group" v-if="page === 'addItem'">
+      <b-form>
+        <div class="form-group">
+          <label for="recipient-name" class="col-form-label">Name:</label>
+          <input type="email" class="form-control" v-model='item.name'>
+          <label for="message-text" class="col-form-label">Price:</label>
+          <input type="text" class="form-control" v-model='item.price'>
+          <label for="message-text" class="col-form-label">Stock:</label>
+          <input type="text" class="form-control" v-model='item.stock'>
+          <label for="message-text" class="col-form-label">Category:</label>
+          <div>
+            <b-form-select v-model="item.category" :options="options" class="mb-3" />
+          </div>
+          <label for="message-text" class="col-form-label">Description:</label>
+          <input type="text" class="form-control" v-model='item.description'>
+          <label for="message-text" class="col-form-label">Image:</label>
+          <!-- <input type="text" class="form-control" v-model='item.link'> -->
+          <input class="form-control" type="file" name="file" @change='imagefile'>
+        </div>
+        <b-button type="b-button" class="btn btn-primary" v-on:click.prevent='addItem'> Add Item </b-button>
+      </b-form>
+    </div>
+
+
+    <div class="container input-group" v-else-if="page === 'addCategory'">
+      <b-form>
+        <div class="form-group">
+          <label for="recipient-name" class="col-form-label">Category:</label>
+          <input type="text" class="form-control" v-model='category.name'>
+        </div>
+        <b-button type="b-button" class="btn btn-primary" v-on:click.prevent='addCategory'> Add Category </b-button>
+      </b-form>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script src="//unpkg.com/babel-polyfill@latest/dist/polyfill.min.js"></script>
+  <script src="//unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.js"></script>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+  <script>
+    new Vue({
+      el: '#admin',
+      data: {
+        page: 'showItem',
+        category: {
+          name: ''
+        },
+        item: {
+          name: '',
+          price: 0,
+          stock: 0,
+          description: '',
+          link: '',
+          category: null,
+          file: ''
+        },
+        options: [],
+        fieldsItem: ['index', 'name', 'price', 'stock', 'category', 'description', 'link', 'show_details'],
+        fieldsCategory: ['index', 'name', 'show_details'],
+        items: [],
+        categories: []
+      },
+      created() {
+        this.showCategory()
+        this.showItem()
+      },
+      methods: {
+        imagefile(file) {
+          console.log(file)
+          this.item.file = file.target.files[0]
+          console.log(this.item.file)
+        },
+
+        logout() {
+          localStorage.clear()
+          window.location.href = "index.html"
+        },
+
+        showCategory() {
+          this.options = [{ value: null, text: 'Please select an option' }]
+
+          axios.get('http://localhost:3000/category', {})
+            .then(categories => {
+              let dataCategories = categories.data
+              this.categories = dataCategories
+              dataCategories.forEach(e => {
+                this.options.push({ value: e._id, text: e.name })
+              })
+            })
+            .catch(error => {
+              console.log(error.response)
+              // if (error.response.data.error.message) {
+              //   // console.log(error.response.data.error.message);
+              //   console.log(error.response)
+              // } else {
+              //   // console.log(error.response.data.error);
+              //   console.log(error.response)
+              // }
+            });
+        },
+
+        showItem() {
+          axios.get('http://localhost:3000/item', {})
+            .then(items => {
+              this.items = items.data
+            })
+            .catch(error => {
+              console.log(error.response.data);
+            });
+        },
+
+        addItem() {
+          this.page = 'addItem'
+
+          let newItem = {
+            name: this.item.name,
+            price: this.item.price,
+            stock: this.item.stock,
+            category: this.item.category,
+            description: this.item.description,
+          }
+
+          const formData = new FormData()
+          formData.append('file', this.item.file)
+          formData.append('data', JSON.stringify(newItem))
+
+          axios.post('http://localhost:3000/item', formData, {
+            headers: {
+              authorization: localStorage.getItem('token')
+            }
+          })
+            .then(item => {
+              console.log('success add item')
+              console.log(item)
+              this.items.push(item.data)
+              this.showItem()
+              this.showCategory()
+              this.clearFormItem()
+
+            })
+            .catch(error => {
+              console.log(error.response.data)
+            })
+        },
+
+        addCategory() {
+          this.page = 'addCategory'
+          axios.post('http://localhost:3000/category', { name: this.category.name }, {
+            headers: {
+              authorization: localStorage.getItem('token')
+            }
+          })
+            .then(category => {
+              console.log('success add category')
+              let name = category.data.item.name
+              let id = category.data.item._id
+              this.options.push({ value: id, text: name })
+              this.categories.push({ name: name })
+              this.clearFormCategory()
+            })
+            .catch(error => {
+              console.log(error.response.data)
+            })
+        },
+
+        editItem(idx, id) {
+          console.log(id)
+          let editItem = {
+            name: this.item.name,
+            price: this.item.price,
+            stock: this.item.stock,
+            category: this.item.category,
+            description: this.item.description,
+          }
+
+          const formData = new FormData()
+          formData.append('file', this.item.file)
+          formData.append('data', JSON.stringify(editItem))
+
+          axios.put(`http://localhost:3000/item/${id}`, formData, {
+            headers: {
+              authorization: localStorage.getItem('token')
+            }
+          })
+            .then(item => {
+              console.log('success edit item')
+              console.log(item)
+              this.clearFormItem()
+              this.showItem()
+              this.showCategory()
+            })
+            .catch(error => {
+              console.log(error.response.data)
+            })
+        },
+
+        editCategory(idx, id) {
+          console.log([idx, id])
+          axios.put(`http://localhost:3000/category/${id}`, { name: this.category.name }, {
+            headers: {
+              authorization: localStorage.getItem('token')
+            }
+          })
+            .then(dataCategory => {
+              console.log(dataCategory)
+              this.clearFormCategory()
+              this.showCategory()
+              this.showItem()
+            })
+            .catch(error => {
+              console.log(error.response.data)
+            })
+        },
+
+        deleteItem(idx, id) {
+          console.log([idx, id])
+          axios.delete(`http://localhost:3000/item/${id}`, {
+            headers: {
+              authorization: localStorage.getItem('token')
+            }
+          })
+            .then(item => {
+              this.items.splice(idx, 1)
+              this.clearFormItem()
+              this.showItem()
+              this.showCategory()
+            })
+            .catch(error => {
+              console.log(error.response)
+            })
+        },
+
+        deleteCategory(idx, id) {
+          axios.delete(`http://localhost:3000/category/${id}`, {
+            headers: {
+              authorization: localStorage.getItem('token')
+            }
+          })
+            .then(category => {
+              this.categories.splice(idx, 1)
+              this.clearFormCategory()
+              this.showCategory()
+              this.showItem()
+            })
+            .catch(error => {
+              console.log(error.response.data)
+            })
+        },
+
+        clearFormItem() {
+          this.item.name = ''
+          this.item.price = ''
+          this.item.stock = ''
+          this.item.category = ''
+          this.item.description = ''
+          this.item.link = ''
+        },
+
+        clearFormCategory() {
+          this.category.name = ''
+        }
+
+      }
+    })
+  </script>
+
+</body>
+
+</html>

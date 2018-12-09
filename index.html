@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+  <!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous"> -->
+  <link rel="stylesheet" href="style.css" type="text/css">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU"
+    crossorigin="anonymous">
+  <link type="text/css" rel="stylesheet" href="//unpkg.com/bootstrap/dist/css/bootstrap.min.css" />
+  <link type="text/css" rel="stylesheet" href="//unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.css" />
+
+  <title>E-commerce</title>
+</head>
+
+<body>
+  <div id="app">
+    <header class="container" v-if='!isLogin'>
+      <navbar-before :categories='categories' @loginstate='checkLogin' @listitems='listitems'></navbar-before>
+    </header>
+    <header class="container" v-if='isLogin'>
+      <navbar-after :categories='categories' :cart='cart' @loginstate='checkLogin' @listitems='listitems'></navbar-after>
+    </header>
+    <div>
+      <carousel></carousel>
+    </div>
+    <div class="container row">
+      <div class=" col-sm-3">
+        <categories-section :categories='categories' @listitems='listitems'></categories-section>
+      </div>
+      <div class="col-xl-9">
+        <item-section :items='items' @listcart='addlistcart'></item-section>
+      </div>
+    </div>
+    <hr>
+    <footer-section></footer-section>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script src="//unpkg.com/babel-polyfill@latest/dist/polyfill.min.js"></script>
+  <script src="//unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.js"></script>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+  <script src="components/navbar-before-login.js"></script>
+  <script src="components/navbar-after-login.js"></script>
+  <script src="components/carousel.js"></script>
+  <script src="components/categories-section.js"></script>
+  <script src="components/item-section.js"></script>
+  <script src="components/footer.js"></script>
+  <!-- <script src="index.js"></script> -->
+
+  <script>
+    new Vue({
+      el: '#app',
+      data: {
+        isLogin: false,
+        loginForm: {
+          email: "",
+          password: ""
+        },
+        registerForm: {
+          email: "",
+          password: ""
+        },
+        categories: [],
+        items: [],
+        cart: []
+      },
+      created() {
+        this.checkLogin()
+        this.showCategory()
+        this.showItem()
+        this.showCart()
+      },
+      methods: {
+        checkLogin() {
+          if (localStorage.getItem('token')) {
+            this.isLogin = true
+          } else {
+            this.isLogin = false
+          }
+        },
+
+        showCategory() {
+          console.log('show categories')
+          axios.get('http://localhost:3000/category', {})
+            .then(categories => {
+              let dataCategories = categories.data
+              console.log('show categories')
+              console.log(dataCategories)
+              this.categories = dataCategories
+            })
+            .catch(error => {
+              if (error.response.data.error.message) {
+                console.log(error.response.data.error.message);
+              } else {
+                console.log(error.response.data.error);
+              }
+            });
+        },
+
+        showItem() {
+          console.log('show items')
+          axios.get('http://localhost:3000/item', {})
+            .then(items => {
+              console.log(items)
+              this.items = items.data
+            })
+            .catch(error => {
+              console.log(error);
+            });
+        },
+
+        addlistcart(listcart) {
+          this.cart = listcart
+          console.log(this.cart)
+        },
+
+        showCart() {
+          console.log('show cart')
+          axios.get('http://localhost:3000/cart', {
+            headers: {
+              authorization: localStorage.getItem('token')
+            }
+          })
+            .then(user => {
+              console.log('masuk show cart')
+              console.log(user.data)
+              this.cart = user.data
+            })
+            .catch(error => {
+              console.log(error)
+            })
+        },
+
+        listitems(data){
+          this.items = data
+        }
+
+      }
+    })
+  </script>
+</body>
+
+</html>

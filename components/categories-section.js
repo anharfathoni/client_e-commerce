@@ -10,7 +10,7 @@ Vue.component('categories-section',{
   `,
   methods:{
     byCategory(category) {
-      axios.get(`http://localhost:3000/item/${category}`, {})
+      axios.get(`35.247.142.22:3000/item/${category}`, {})
         .then(items => {
           console.log('show items by category')
           console.log(items.data)

@@ -38,7 +38,7 @@ Vue.component('navbar-after', {
   },
   methods: {
     deleteItemCart(idx, itemId) {
-      axios.put('http://localhost:3000/cart', { itemId }, {
+      axios.put('35.247.142.22:3000cart', { itemId }, {
         headers: {
           authorization: localStorage.getItem('token')
         }
@@ -54,7 +54,7 @@ Vue.component('navbar-after', {
     },
 
     checkout() {
-      axios.put('http://localhost:3000/cart/checkout', {}, {
+      axios.put('35.247.142.22:3000cart/checkout', {}, {
         headers: {
           authorization: localStorage.getItem('token')
         }
@@ -90,7 +90,7 @@ Vue.component('navbar-after', {
     },
 
     byCategory(category) {
-      axios.get(`http://localhost:3000/item/${category}`, {})
+      axios.get(`35.247.142.22:3000item/${category}`, {})
         .then(items => {
           console.log('show items by category')
           console.log(items.data)
@@ -106,7 +106,7 @@ Vue.component('navbar-after', {
     },
 
     allGallery() {
-      axios.get('http://localhost:3000/item', {})
+      axios.get('35.247.142.22:3000item', {})
         .then(items => {
           console.log(items)
           this.$emit('listitems', items.data)

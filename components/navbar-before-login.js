@@ -117,7 +117,7 @@ Vue.component('navbar-before', {
   },
   methods: {
     loginNow() {
-      axios.post('http://localhost:3000/user', {
+      axios.post('35.247.142.22:3000/user', {
         email: this.loginForm.email,
         password: this.loginForm.password
       })
@@ -146,7 +146,7 @@ Vue.component('navbar-before', {
         });
     },
     registerNow() {
-      axios.post('http://localhost:3000/user/register', {
+      axios.post('35.247.142.22:3000/user/register', {
         name: this.registerForm.name,
         email: this.registerForm.email,
         password: this.registerForm.password,
@@ -180,7 +180,7 @@ Vue.component('navbar-before', {
     },
 
     byCategory(category) {
-      axios.get(`http://localhost:3000/item/${category}`, {})
+      axios.get(`35.247.142.22:3000/item/${category}`, {})
         .then(items => {
           console.log('show items by category')
           console.log(items.data)
@@ -196,7 +196,7 @@ Vue.component('navbar-before', {
     },
 
     allGallery() {
-      axios.get('http://localhost:3000/item', {})
+      axios.get('35.247.142.22:3000/item', {})
         .then(items => {
           console.log(items)
           this.$emit('listitems',items.data)

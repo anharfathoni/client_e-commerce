@@ -21,7 +21,7 @@ Vue.component('item-section', {
   methods: {
     addToCart(item) {
       console.log('ini item yang ditambahkan')
-      axios.post('http://localhost:3000/cart', {itemId: item._id}, {
+      axios.post('35.247.142.22:3000/cart', {itemId: item._id}, {
         headers: {
           authorization: localStorage.getItem('token')
         }

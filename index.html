@@ -86,7 +86,7 @@
 
         showCategory() {
           console.log('show categories')
-          axios.get('http://localhost:3000/category', {})
+          axios.get('35.247.142.22:3000/category', {})
             .then(categories => {
               let dataCategories = categories.data
               console.log('show categories')
@@ -104,7 +104,7 @@
 
         showItem() {
           console.log('show items')
-          axios.get('http://localhost:3000/item', {})
+          axios.get('35.247.142.22:3000/item', {})
             .then(items => {
               console.log(items)
               this.items = items.data
@@ -121,7 +121,7 @@
 
         showCart() {
           console.log('show cart')
-          axios.get('http://localhost:3000/cart', {
+          axios.get('35.247.142.22:3000/cart', {
             headers: {
               authorization: localStorage.getItem('token')
             }

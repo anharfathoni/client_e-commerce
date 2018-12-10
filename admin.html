@@ -217,7 +217,7 @@
         showCategory() {
           this.options = [{ value: null, text: 'Please select an option' }]
 
-          axios.get('http://localhost:3000/category', {})
+          axios.get('35.247.142.22:3000/category', {})
             .then(categories => {
               let dataCategories = categories.data
               this.categories = dataCategories
@@ -238,7 +238,7 @@
         },
 
         showItem() {
-          axios.get('http://localhost:3000/item', {})
+          axios.get('35.247.142.22:3000/item', {})
             .then(items => {
               this.items = items.data
             })
@@ -262,7 +262,7 @@
           formData.append('file', this.item.file)
           formData.append('data', JSON.stringify(newItem))
 
-          axios.post('http://localhost:3000/item', formData, {
+          axios.post('35.247.142.22:3000/item', formData, {
             headers: {
               authorization: localStorage.getItem('token')
             }
@@ -283,7 +283,7 @@
 
         addCategory() {
           this.page = 'addCategory'
-          axios.post('http://localhost:3000/category', { name: this.category.name }, {
+          axios.post('35.247.142.22:3000/category', { name: this.category.name }, {
             headers: {
               authorization: localStorage.getItem('token')
             }
@@ -315,7 +315,7 @@
           formData.append('file', this.item.file)
           formData.append('data', JSON.stringify(editItem))
 
-          axios.put(`http://localhost:3000/item/${id}`, formData, {
+          axios.put(`35.247.142.22:3000/item/${id}`, formData, {
             headers: {
               authorization: localStorage.getItem('token')
             }
@@ -334,7 +334,7 @@
 
         editCategory(idx, id) {
           console.log([idx, id])
-          axios.put(`http://localhost:3000/category/${id}`, { name: this.category.name }, {
+          axios.put(`35.247.142.22:3000/category/${id}`, { name: this.category.name }, {
             headers: {
               authorization: localStorage.getItem('token')
             }
@@ -352,7 +352,7 @@
 
         deleteItem(idx, id) {
           console.log([idx, id])
-          axios.delete(`http://localhost:3000/item/${id}`, {
+          axios.delete(`35.247.142.22:3000/item/${id}`, {
             headers: {
               authorization: localStorage.getItem('token')
             }
@@ -369,7 +369,7 @@
         },
 
         deleteCategory(idx, id) {
-          axios.delete(`http://localhost:3000/category/${id}`, {
+          axios.delete(`35.247.142.22:3000/category/${id}`, {
             headers: {
               authorization: localStorage.getItem('token')
             }
